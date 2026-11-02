@@ -1,58 +1,101 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Plataforma de Gestión de Prácticas y Titulación — IPSS
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Plataforma web centralizada para la gestión, validación documental y trazabilidad del proceso de **Práctica Profesional** (Convencional, Convalidación y Clínica Tecnológica) y su articulación normativa con la asignatura **Taller de Integración** del **Instituto Profesional San Sebastián (IPSS)**.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 1. Alcance Funcional y Reglas de Negocio
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+El sistema automatiza el flujo para un volumen aproximado de **250 estudiantes por trimestre** (Trimestre 1 en carreras técnicas y Trimestre 3 en ingenierías), resolviendo las siguientes reglas institucionales:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+* **Autenticación Institucional (RF_01):** Inicio de sesión único (SSO) integrado con **Microsoft 365** (`@ipss.cl`) y control de acceso basado en roles (*Estudiante, Coordinador, Supervisor, Administrador*).
+* **Modalidades de Postulación (RF_04, RF_08):**
+  * **Práctica Convencional:** Registro de centro de práctica, supervisor, 360 horas y carga de ficha firmada en PDF. Al aprobarse, emite automáticamente la **Carta de Presentación (Seguro Escolar)** en PDF y bloquea el Taller de Integración en modalidad **individual**.
+  * **Convalidación (Laboral / Emprendimiento):** Carga de certificado de antigüedad/cotizaciones (mínimo 12 meses) y RTM inicial. Omite la emisión de seguro escolar, habilita recordatorio para RTM final en EVA y asigna modalidad **individual** en el Taller de Integración.
+  * **Clínica Tecnológica:** Formulario simplificado sin datos de empresa externa. Habilita la conformación de equipos en el Taller de Integración restringidos estrictamente a **mínimo 2 y máximo 3 integrantes**.
+* **Trazabilidad en Tiempo Real (RF_09, RF_10):** Seguimiento visual del flujo de estados (`Enviada` ➔ `En revisión` ➔ `Con observaciones` / `Rechazada` ➔ `Aprobada`), exigiendo motivo obligatorio de retroalimentación ante cualquier observación o rechazo.
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 2. Stack Tecnológico y Seguridad
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+* **Backend:** PHP 8.2+ / Laravel 11 (Arquitectura MVC)
+* **Base de Datos:** MySQL Server 8.0 (Contenedor Docker local en puerto `3307`)
+* **Paquetes Clave:**
+  * `laravel/socialite` + `socialiteproviders/microsoft` (SSO Microsoft 365)
+  * `barryvdh/laravel-dompdf` (Emisión automática de Seguro Escolar)
+* **Lineamientos de Seguridad (ISO/IEC 25010):**
+  * **Repositorio Documental Privado:** El 100% de los documentos PDF se almacenan fuera del directorio público (`storage/app/private`) y se sirven mediante *streams* autenticados y autorizados por rol.
+  * **Separación de Ambientes:** Desarrollo validado en entorno local; la revisión de seguridad, despliegue en ambiente **QA** y paso a **Producción** son gestionados exclusivamente por el **Área de TI del IPSS**.
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+---
 
-## Agentic Development
+## 3. Guía de Instalación Rápida (Para el Equipo de Desarrollo)
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+Sigue estos pasos para levantar el entorno local completo en menos de 3 minutos:
 
+### Requisitos previos
+* PHP >= 8.2, Composer y Docker (con Docker Compose).
+
+### Paso a paso
 ```bash
-composer require laravel/boost --dev
+# 1. Clonar el repositorio y entrar al directorio
+git clone [https://github.com/alvarogonzalez-ipss/plataforma-practicas-ipss.git](https://github.com/alvarogonzalez-ipss/plataforma-practicas-ipss.git)
+cd plataforma-practicas-ipss
 
-php artisan boost:install
+# 2. Cambiarse a la rama de integración 'develop'
+git checkout develop
+
+# 3. Instalar dependencias de PHP
+composer install
+
+# 4. Configurar variables de entorno locales
+cp .env.example .env
+php artisan key:generate
+
+# 5. Levantar el contenedor de MySQL 8.0 (Expuesto en el puerto 3307)
+docker compose up -d
+
+# 6. Ejecutar las migraciones del esquema IPSS
+php artisan migrate
+
+# 7. Iniciar el servidor de desarrollo local
+php artisan serve
 ```
+La aplicación estará disponible en `http://localhost:8000`.
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+---
 
-## Contributing
+## 4. Flujo de Trabajo en Git y Reglas de Ramas (Gitflow)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Las ramas `main` y `develop` se encuentran protegidas. **Está bloqueado el `git push` directo** a ambas ramas; todo cambio debe ingresar mediante un **Pull Request (PR)** revisado y aprobado por el administrador del repositorio (`@alvarogonzalez-ipss`).
 
-## Code of Conduct
+1. Antes de empezar una tarea, actualiza tu rama `develop`:
+   ```bash
+   git checkout develop
+   git pull origin develop
+   ```
+2. Crea una rama para tu requerimiento o vista siguiendo la convención:
+   * `feat/nombre-funcionalidad` (ej. `feat/ui-formulario-convencional`)
+   * `fix/descripcion-correccion` (ej. `fix/validacion-peso-pdf`)
+   ```bash
+   git checkout -b feat/mi-nueva-funcionalidad
+   ```
+3. Realiza tus commits y sube tu rama al repositorio:
+   ```bash
+   git add .
+   git commit -m "feat(solicitudes): agregar vista de formulario practica convencional"
+   git push -u origin feat/mi-nueva-funcionalidad
+   ```
+4. En GitHub, abre un **Pull Request** apuntando desde tu rama hacia **`develop`** (nunca hacia `main`), completa la plantilla de verificación y solicita la revisión.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## 5. Estructura de Directorios Clave por Rol
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+* `database/migrations/` y `database/seeders/` — Esquema relacional MySQL 8.0 y datos semilla.
+* `app/Models/` y `app/Services/` — Modelos Eloquent, máquina de estados y reglas de grupos (2-3 integrantes).
+* `resources/views/estudiante/` — Vistas de formularios por modalidad, barra de estado y grupos de taller.
+* `resources/views/coordinador/` — Bandeja de revisión, filtros trimestrales (T1/T3) y resolución de solicitudes.
+* `resources/views/pdf/` — Plantillas Blade para generación automática de Seguro Escolar y comprobantes.
+* `storage/app/private/` — Almacenamiento aislado de documentos PDF (ignorado en Git).
