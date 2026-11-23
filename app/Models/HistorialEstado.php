@@ -24,7 +24,7 @@ class HistorialEstado extends Model
     protected static function booted(): void
     {
         static::saving(function (self $historial): void {
-            // Regla de Negocio #2: Pasar a con_observaciones o rechazada exige motivo obligatorio
+            // Solicitar un motivo cuando la solicitud tenga observaciones o sea rechazada.
             if (Solicitud::requiereMotivo($historial->estado_nuevo) && blank($historial->motivo_u_observacion)) {
                 throw new InvalidArgumentException(
                     "El campo motivo_u_observacion es obligatorio al pasar al estado '{$historial->estado_nuevo}'."

@@ -117,7 +117,7 @@ class Solicitud extends Model
     protected static function booted(): void
     {
         static::saving(function (self $solicitud): void {
-            // Regla de Negocio #1: Forzar modalidad_taller según la modalidad de práctica
+           // Permitir taller individual o grupal solo para Clínica Tecnológica.
             $solicitud->modalidad_taller = $solicitud->modalidad === self::MODALIDAD_CLINICA
                 ? self::TALLER_GRUPAL
                 : self::TALLER_INDIVIDUAL;

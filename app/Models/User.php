@@ -93,14 +93,11 @@ class User extends Authenticatable
         return $this->hasMany(Solicitud::class, 'supervisor_id');
     }
 
-    /**
-     * Solicitudes revisadas o resueltas por este usuario como coordinador/admin.
-     *
-     * @return HasMany<Solicitud, $this>
-     */
+
+   /** Solicitudes revisadas o gestionadas por el coordinador o administrador. */
     public function solicitudesRevisadas(): HasMany
     {
-        return $this->hasMany(Solicitud::class, 'revisado_por');
+    return $this->hasMany(Solicitud::class, 'revisado_por');
     }
 
     /**
@@ -114,8 +111,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Cambios de estado registrados por este usuario en la trazabilidad.
-     *
+     * Cambios de estado registrados por este usuario en la trazabilidad.*
      * @return HasMany<HistorialEstado, $this>
      */
     public function historialEstadosRegistrados(): HasMany
@@ -123,11 +119,11 @@ class User extends Authenticatable
         return $this->hasMany(HistorialEstado::class, 'usuario_id');
     }
 
-    /**
-     * Grupos de Taller de Integración a los que pertenece como estudiante.
-     *
-     * @return BelongsToMany<GrupoTaller, $this, GrupoTallerUser>
-     */
+   /**
+    * Grupos de Taller de Integración en los que participa el estudiante.
+    *
+    * @return BelongsToMany<GrupoTaller, $this, GrupoTallerUser>
+    */
     public function gruposTaller(): BelongsToMany
     {
         return $this->belongsToMany(GrupoTaller::class, 'grupo_taller_user', 'estudiante_id', 'grupo_taller_id')

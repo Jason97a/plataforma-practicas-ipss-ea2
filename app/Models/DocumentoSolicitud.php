@@ -72,7 +72,7 @@ class DocumentoSolicitud extends Model
     protected static function booted(): void
     {
         static::saving(function (self $documento): void {
-            // Regla de Negocio #3 (ISO 25010): Jamás permitir rutas en directorio público
+         // Evitar el acceso a archivos fuera del directorio permitido.
             $rutaNormalizada = ltrim(str_replace('\\', '/', $documento->ruta_privada), '/');
 
             if (str_starts_with($rutaNormalizada, 'public/') || str_contains($rutaNormalizada, '..')) {

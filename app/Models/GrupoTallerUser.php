@@ -42,7 +42,7 @@ class GrupoTallerUser extends Pivot
 
             if ($grupo && ! $grupo->tieneCupoDisponible()) {
                 throw new InvalidArgumentException(
-                    'El grupo de Taller de Integración ya alcanzó el máximo permitido de 3 integrantes.'
+                    'El grupo ya alcanzó el máximo permitido de 3 integrantes.'
                 );
             }
         });

@@ -57,7 +57,7 @@ class GrupoTaller extends Model
             $grupo->min_integrantes ??= self::MIN_INTEGRANTES;
             $grupo->max_integrantes ??= self::MAX_INTEGRANTES;
 
-            // Regla de Negocio #1: Taller de Integración grupal exige estrictamente mín 2 y máx 3 integrantes
+            // Validar que el grupo tenga entre 2 y 3 integrantes.
             if ($grupo->min_integrantes < self::MIN_INTEGRANTES || $grupo->max_integrantes > self::MAX_INTEGRANTES || $grupo->min_integrantes > $grupo->max_integrantes) {
                 throw new InvalidArgumentException(
                     'Los grupos de Taller de Integración deben tener un mínimo de 2 y un máximo de 3 integrantes.'

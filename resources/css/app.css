@@ -7,3 +7,94 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+
+/* =================================
+   MENU LATERAL - PLATAFORMA IPSS
+================================= */
+
+.sidebar-ipss {
+    width: 260px;
+    height: 100vh;
+    background: #143253;
+    color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+}
+
+.sidebar-logo {
+    padding: 30px 25px;
+    border-bottom: 1px solid rgba(255,255,255,.12);
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-logo h1 {
+    font-size: 40px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.sidebar-logo span {
+    font-size: 11px;
+    letter-spacing: 1px;
+    margin-top: 3px;
+}
+
+.sidebar-menu {
+    padding: 20px 12px;
+    flex: 1;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    margin-bottom: 8px;
+    color: white;
+    text-decoration: none;
+    border-radius: 9px;
+    transition: .2s;
+}
+
+.menu-item i {
+    font-size: 19px;
+}
+
+.menu-item:hover,
+.menu-item.active {
+    background: #24527A;
+    color: white;
+}
+
+.sidebar-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 22px;
+    border-top: 1px solid rgba(255,255,255,.12);
+}
+
+.sidebar-user i {
+    font-size: 35px;
+}
+
+.sidebar-user div {
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-user small {
+    color: #bdcbd9;
+}
+
+.contenido-principal {
+    margin-left: 260px;
+    padding: 35px;
+    min-height: 100vh;
+}
